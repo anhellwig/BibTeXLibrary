@@ -157,7 +157,7 @@ namespace BibTeXLibrary
                 }
                 curState = nextState;
             }
-            if (curState != ParserState.OutEntry)
+            if (curState != ParserState.OutEntry && curState != ParserState.Begin)
             {
                 var expected = from pair in StateMap[curState]
                     select pair.Key;
