@@ -219,12 +219,11 @@ namespace BibTeXLibrary
         {
             get
             {
-                index = index.ToLower();
-                return _tags.ContainsKey(index) ? _tags[index] : "";
+                return _tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : string.Empty;
             }
             set
             {
-                _tags[index.ToLower()] = value;
+                _tags[index.ToLowerInvariant()] = value;
             }
         }
         #endregion
