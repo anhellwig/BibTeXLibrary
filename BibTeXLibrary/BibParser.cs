@@ -72,35 +72,9 @@ namespace BibTeXLibrary
         }
         #endregion
 
-        #region Public Static Method
-        /// <summary>
-        /// Parse by given input text reader.
-        /// </summary>
-        /// <param name="inputText"></param>
-        /// <returns></returns>
-        public static List<BibEntry> Parse(TextReader inputText)
-        {
-            using (var parser = new BibParser(inputText))
-            { 
-                return parser.GetAllResult();
-            }
-        } 
-        #endregion
-
         #region Public Method
-        /// <summary>
-        /// Get all result from Parser.
-        /// </summary>
-        /// <returns></returns>
-        public List<BibEntry> GetAllResult()
-        {
-            return Parser().ToList();
-        }
-
-        #endregion
-
-        #region Private Method
-        private IEnumerable<BibEntry> Parser()
+      
+        public IEnumerable<BibEntry> Parse()
         {
             var curState  = ParserState.Begin;
             var nextState = ParserState.Begin;
@@ -176,6 +150,9 @@ namespace BibTeXLibrary
             }
         }
 
+        #endregion
+
+        #region Private Method
         /// <summary>
         /// Tokenizer for BibTeX entry.
         /// </summary>
