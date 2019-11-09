@@ -64,6 +64,7 @@ namespace BibTeXLibrary
         /// Input text stream.
         /// </summary>
         private readonly TextReader _inputText;
+        private readonly BibParserConfig _config;
 
         /// <summary>
         /// Line No. counter.
@@ -77,9 +78,10 @@ namespace BibTeXLibrary
         #endregion
 
         #region Constructor
-        public BibParser(TextReader inputText)
+        public BibParser(TextReader inputText, BibParserConfig config)
         {
             _inputText = inputText;
+            _config = config;
         }
 
         #endregion
@@ -286,7 +288,7 @@ namespace BibTeXLibrary
                     _colCount = 0;
                     _lineCount++;
                 }
-                else if (Config.BeginCommentCharacters.Any(item => item == c))
+                else if (_config.BeginCommentCharacters.Any(item => item == c))
                 {
                     _colCount = 0;
                     _lineCount++;
