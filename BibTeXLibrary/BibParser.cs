@@ -32,6 +32,7 @@ namespace BibTeXLibrary
             {ParserState.InKey,       new Action {
                 { TokenType.RightBrace,    new Next(ParserState.OutEntry,    BibBuilderState.Build) },
                 { TokenType.Name,          new Next(ParserState.OutKey,      BibBuilderState.SetKey) },
+                { TokenType.String,        new Next(ParserState.OutKey,      BibBuilderState.SetKey) },
                 { TokenType.Comma,         new Next(ParserState.InTagName,   BibBuilderState.Skip) } } },
 
             {ParserState.OutKey,      new Action {
