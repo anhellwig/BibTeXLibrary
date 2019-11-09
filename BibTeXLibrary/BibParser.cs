@@ -91,84 +91,77 @@ namespace BibTeXLibrary
       
         public IEnumerable<BibEntry> Parse()
         {
-            try
+            var curState = ParserState.Begin;
+            var nextState = ParserState.Begin;
+
+            BibEntry bib = null;
+            var tagValueBuilder = new StringBuilder();
+            var tagName = "";
+
+            // Fetch token from Tokenizer and build BibEntry
+            foreach (var token in Tokenizer())
             {
-                var curState = ParserState.Begin;
-                var nextState = ParserState.Begin;
-
-                BibEntry bib = null;
-                var tagValueBuilder = new StringBuilder();
-                var tagName = "";
-
-                // Fetch token from Tokenizer and build BibEntry
-                foreach (var token in Tokenizer())
+                // Transfer state
+                if (StateMap[curState].ContainsKey(token.Type))
                 {
-                    // Transfer state
-                    if (StateMap[curState].ContainsKey(token.Type))
-                    {
-                        nextState = StateMap[curState][token.Type].Item1;
-                    }
-                    else
-                    {
-                        var expected = from pair in StateMap[curState]
-                            select pair.Key;
-                        throw new UnexpectedTokenException(_lineCount, _colCount, token.Type, expected.ToArray());
-                    }
-                    // Build BibEntry
-                    switch (StateMap[curState][token.Type].Item2)
-                    {
-                        case BibBuilderState.Create:
-                            bib = new BibEntry();
-                            break;
+                    nextState = StateMap[curState][token.Type].Item1;
+                }
+                else
+                {
+                    var expected = from pair in StateMap[curState]
+                        select pair.Key;
+                    throw new UnexpectedTokenException(_lineCount, _colCount, token.Type, expected.ToArray());
+                }
+                // Build BibEntry
+                switch (StateMap[curState][token.Type].Item2)
+                {
+                    case BibBuilderState.Create:
+                        bib = new BibEntry();
+                        break;
 
-                        case BibBuilderState.SetType:
-                            Debug.Assert(bib != null, "bib != null");
-                            bib.Type = token.Value;
-                            break;
+                    case BibBuilderState.SetType:
+                        Debug.Assert(bib != null, "bib != null");
+                        bib.Type = token.Value;
+                        break;
 
-                        case BibBuilderState.SetKey:
-                            Debug.Assert(bib != null, "bib != null");
-                            bib.Key = token.Value;
-                            break;
+                    case BibBuilderState.SetKey:
+                        Debug.Assert(bib != null, "bib != null");
+                        bib.Key = token.Value;
+                        break;
 
-                        case BibBuilderState.SetTagName:
-                            tagName = token.Value;
-                            break;
+                    case BibBuilderState.SetTagName:
+                        tagName = token.Value;
+                        break;
 
-                        case BibBuilderState.SetTagValue:
-                            tagValueBuilder.Append(token.Value);
-                            break;
+                    case BibBuilderState.SetTagValue:
+                        tagValueBuilder.Append(token.Value);
+                        break;
 
-                        case BibBuilderState.SetTag:
+                    case BibBuilderState.SetTag:
+                        Debug.Assert(bib != null, "bib != null");
+                        bib[tagName] = tagValueBuilder.ToString();
+                        tagValueBuilder.Clear();
+                        tagName = string.Empty;
+                        break;
+
+                    case BibBuilderState.Build:
+                        if (tagName != string.Empty)
+                        {
                             Debug.Assert(bib != null, "bib != null");
                             bib[tagName] = tagValueBuilder.ToString();
                             tagValueBuilder.Clear();
                             tagName = string.Empty;
-                            break;
-
-                        case BibBuilderState.Build:
-                            if (tagName != string.Empty)
-                            {
-                                Debug.Assert(bib != null, "bib != null");
-                                bib[tagName] = tagValueBuilder.ToString();
-                                tagValueBuilder.Clear();
-                                tagName = string.Empty;
-                            }
-                            yield return bib;
-                            break;
-                    }
-                    curState = nextState;
+                        }
+                        yield return bib;
+                        break;
                 }
-                if (curState != ParserState.OutEntry)
-                {
-                    var expected = from pair in StateMap[curState]
-                        select pair.Key;
-                    throw new UnexpectedTokenException(_lineCount, _colCount, TokenType.EOF, expected.ToArray());
-                }
+                curState = nextState;
             }
-            finally
+            if (curState != ParserState.OutEntry)
             {
-                Dispose();
+                var expected = from pair in StateMap[curState]
+                    select pair.Key;
+                throw new UnexpectedTokenException(_lineCount, _colCount, TokenType.EOF, expected.ToArray());
             }
         }
 
