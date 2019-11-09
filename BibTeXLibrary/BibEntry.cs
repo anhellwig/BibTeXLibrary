@@ -1,165 +1,19 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BibTeXLibrary
 {
-    using System.Linq;
-    using System.Runtime.CompilerServices;
-
-    public class BibEntry
+    public class BibEntry : IEnumerable<KeyValuePair<string, string>>
     {
-        #region Private Field
         /// <summary>
         /// Store all tags
         /// </summary>
         private readonly Dictionary<string, string> _tags = new Dictionary<string, string>();
-        #endregion
 
-        #region Public Property
-        public string Address
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Annote
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Author
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Booktitle
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Chapter
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Crossref
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Edition
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Editor
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Howpublished
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Institution
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Journal
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Mouth
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Note
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Number
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Organization
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Pages
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Publisher
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string School
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Series
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Title
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Volume
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Year
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Month
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
-
-        public string Abstract
-        {
-            get => this[GetFormattedName()];
-            set => this[GetFormattedName()] = value;
-        }
+        /// <summary>
+        /// Entry's key
+        /// </summary>
+        public string Key { get; set; }
 
         /// <summary>
         /// Entry's type
@@ -167,51 +21,7 @@ namespace BibTeXLibrary
         public string Type { get; set; }
 
         /// <summary>
-        /// Entry's key
-        /// </summary>
-        public string Key { get; set; }
-        #endregion
-
-        #region Public Method
-
-        private string GetFormattedName([CallerMemberName] string propertyName = null)
-        {
-            return propertyName.First().ToString().ToLower() + propertyName.Substring(1);
-        }
-
-        /// <summary>
-        /// To BibTeX entry
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            var bib = new StringBuilder("@");
-            bib.Append(Type);
-            bib.Append('{');
-            bib.Append(Key);
-            bib.Append(",");
-            bib.Append(Config.LineFeed);
-
-            foreach (var tag in _tags)
-            {
-                bib.Append(Config.Retract);
-                bib.Append(tag.Key);
-                bib.Append(" = {");
-                bib.Append(tag.Value);
-                bib.Append("},");
-                bib.Append(Config.LineFeed);
-            }
-
-            bib.Append("}");
-
-            return bib.ToString();
-        }
-        #endregion
-
-        #region Public Indexer
-        /// <summary>
-        /// Get value by given tagname(index) or
-        /// create new tag by index and value.
+        /// Get value by given tagname(index) or create new tag by index and value.
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
@@ -226,6 +36,9 @@ namespace BibTeXLibrary
                 _tags[index.ToLowerInvariant()] = value;
             }
         }
-        #endregion
+
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this._tags.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this._tags.GetEnumerator();
     }
 }
