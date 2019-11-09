@@ -8,11 +8,6 @@ namespace BibTeXLibrary
     {
         #region Private Field
         /// <summary>
-        /// Entry's type
-        /// </summary>
-        private EntryType _type;
-
-        /// <summary>
         /// Store all tags
         /// </summary>
         private readonly Dictionary<string, string> _tags = new Dictionary<string, string>();
@@ -154,17 +149,7 @@ namespace BibTeXLibrary
         /// <summary>
         /// Entry's type
         /// </summary>
-        public string Type
-        {
-            get
-            {
-                return Enum.GetName(typeof(EntryType), _type);
-            }
-            set
-            {
-                _type = (EntryType)Enum.Parse(typeof(EntryType), value, true);
-            }
-        }
+        public string Type { get; set; }
 
         /// <summary>
         /// Entry's key
@@ -222,23 +207,5 @@ namespace BibTeXLibrary
             }
         }
         #endregion
-    }
-
-    public enum EntryType
-    {
-        Article,
-        Book,
-        Booklet,
-        Conference,
-        InBook,
-        InCollection,
-        InProceedings,
-        Manual,
-        Mastersthesis,
-        Misc,
-        PhDThesis,
-        Proceedings,
-        TechReport,
-        Unpublished
     }
 }
