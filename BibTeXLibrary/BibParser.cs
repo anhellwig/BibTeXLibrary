@@ -31,8 +31,8 @@ namespace BibTeXLibrary
 
             {ParserState.InKey,       new Action {
                 { TokenType.RightBrace,    new Next(ParserState.OutEntry,    BibBuilderState.Build) },
-                { TokenType.Name,          new Next(ParserState.OutKey,      BibBuilderState.SetKey) },
-                { TokenType.String,        new Next(ParserState.OutKey,      BibBuilderState.SetKey) },
+                { TokenType.Name,          new Next(ParserState.InKey,       BibBuilderState.SetKey) },
+                { TokenType.String,        new Next(ParserState.InKey,       BibBuilderState.SetKey) },
                 { TokenType.Comma,         new Next(ParserState.InTagName,   BibBuilderState.Skip) } } },
 
             {ParserState.OutKey,      new Action {
@@ -47,8 +47,7 @@ namespace BibTeXLibrary
 
             {ParserState.InTagValue,  new Action {
                 { TokenType.String,        new Next(ParserState.OutTagValue, BibBuilderState.SetTagValue) },
-                { TokenType.Name,          new Next(ParserState.OutTagValue, BibBuilderState.SetTagValue) }
-            } },
+                { TokenType.Name,          new Next(ParserState.OutTagValue, BibBuilderState.SetTagValue) } } },
 
             {ParserState.OutTagValue, new Action {
                 { TokenType.Concatenation, new Next(ParserState.InTagValue,  BibBuilderState.Skip) },
@@ -61,9 +60,8 @@ namespace BibTeXLibrary
         #endregion
 
         #region Private Field
-        /// <summary>
-        /// Input text stream.
-        /// </summary>
+
+        private static char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
         private readonly TextReader _inputText;
         private readonly BibParserConfig _config;
 
@@ -130,7 +128,7 @@ namespace BibTeXLibrary
 
                     case BibBuilderState.SetKey:
                         Debug.Assert(bib != null, "bib != null");
-                        bib.Key = token.Value;
+                        bib.Key += token.Value;
                         break;
 
                     case BibBuilderState.SetTagName:
@@ -203,10 +201,8 @@ namespace BibTeXLibrary
                         if ((code = Peek()) == -1) break;
                         c = (char)code;
 
-                        if (!char.IsLetterOrDigit(c) &&
-                            c != '-' &&
-                            c != '.' &&
-                            c != '_') break;
+                        if (!char.IsLetterOrDigit(c) && !allowedSpecialChars.Contains(c))
+                            break;
                     }
                     yield return new Token(TokenType.Name, value.ToString());
                     goto ContinueExcute;
