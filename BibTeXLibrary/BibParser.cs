@@ -11,7 +11,7 @@ namespace BibTeXLibrary
     using Action = Dictionary<TokenType, Tuple<ParserState, BibBuilderState>>;
     using StateMap = Dictionary<ParserState, Dictionary<TokenType, Tuple<ParserState, BibBuilderState>>>;
 
-    public sealed class BibParser : IDisposable
+    public sealed class BibParser
     {
         /// <summary>
         /// State tranfer map
@@ -311,14 +311,6 @@ namespace BibTeXLibrary
         {
             _colCount++;
             return _inputText.Read();
-        }
-
-        /// <summary>
-        /// Dispose stream resource.
-        /// </summary>
-        public void Dispose()
-        {
-            _inputText?.Dispose();
         }
     }
 
