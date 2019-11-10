@@ -79,16 +79,20 @@ namespace BibTeXLibrary
         #endregion
 
         #region Constructor
+        public BibParser(TextReader inputText) : this(inputText, new BibParserConfig())
+        {
+        }
+
         public BibParser(TextReader inputText, BibParserConfig config)
         {
-            _inputText = inputText;
-            _config = config;
+            _inputText = inputText ?? throw new ArgumentNullException(nameof(inputText));
+            _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         #endregion
 
         #region Public Method
-      
+
         public IEnumerable<BibEntry> Parse()
         {
             var curState = ParserState.Begin;
