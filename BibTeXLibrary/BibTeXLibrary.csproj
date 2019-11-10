@@ -49,6 +49,8 @@
     <Compile Include="BibEntry.cs" />
     <Compile Include="BibParser.cs" />
     <Compile Include="BibParserConfig.cs" />
+    <Compile Include="BibWriter.cs" />
+    <Compile Include="BibWriterConfig.cs" />
     <Compile Include="ParseErrorException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
