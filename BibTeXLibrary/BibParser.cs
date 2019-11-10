@@ -13,7 +13,6 @@ namespace BibTeXLibrary
 
     public sealed class BibParser : IDisposable
     {
-        #region Const Field
         /// <summary>
         /// State tranfer map
         /// curState --Token--> (nextState, BibBuilderAction)
@@ -57,9 +56,7 @@ namespace BibTeXLibrary
             {ParserState.OutEntry,    new Action {
                 { TokenType.Start,         new Next(ParserState.InStart,     BibBuilderState.Create) } } },
         };
-        #endregion
 
-        #region Private Field
 
         private static char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
         private readonly TextReader _inputText;
@@ -74,9 +71,7 @@ namespace BibTeXLibrary
         /// Column counter.
         /// </summary>
         private int _colCount;
-        #endregion
 
-        #region Constructor
         public BibParser(TextReader inputText) : this(inputText, new BibParserConfig())
         {
         }
@@ -87,9 +82,7 @@ namespace BibTeXLibrary
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-        #endregion
 
-        #region Public Method
 
         public IEnumerable<BibEntry> Parse()
         {
@@ -166,10 +159,6 @@ namespace BibTeXLibrary
                 throw new UnexpectedTokenException(_lineCount, _colCount, TokenType.EOF, expected.ToArray());
             }
         }
-
-        #endregion
-
-        #region Private Method
         /// <summary>
         /// Tokenizer for BibTeX entry.
         /// </summary>
@@ -323,9 +312,7 @@ namespace BibTeXLibrary
             _colCount++;
             return _inputText.Read();
         }
-        #endregion
 
-        #region Impement Interface "IDisposable"
         /// <summary>
         /// Dispose stream resource.
         /// </summary>
@@ -333,7 +320,6 @@ namespace BibTeXLibrary
         {
             _inputText?.Dispose();
         }
-        #endregion
     }
 
     enum ParserState
