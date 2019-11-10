@@ -1,44 +1,48 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace BibTeXLibrary
 {
     public class BibEntry : IEnumerable<KeyValuePair<string, string>>
     {
-        /// <summary>
-        /// Store all tags
-        /// </summary>
-        private readonly Dictionary<string, string> _tags = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> tags = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
-        /// <summary>
-        /// Entry's key
-        /// </summary>
         public string Key { get; set; }
 
-        /// <summary>
-        /// Entry's type
-        /// </summary>
         public string Type { get; set; }
 
         /// <summary>
         /// Get value by given tagname(index) or create new tag by index and value.
         /// </summary>
         /// <param name="index"></param>
-        /// <returns></returns>
+        /// <returns>The value if the key exists, otherwise `null`.</returns>
         public string this[string index]
         {
             get
             {
-                return _tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : null;
+                return this.tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : null;
             }
             set
             {
-                _tags[index.ToLowerInvariant()] = value;
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    if (this.ContainsKey(index))
+                    {
+                        this.tags.Remove(index);
+                    }
+                }
+                else
+                {
+                    this.tags[index.ToLowerInvariant()] = value;
+                }
             }
         }
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this._tags.GetEnumerator();
+        public bool ContainsKey(string key) => this.tags.ContainsKey(key);
 
-        IEnumerator IEnumerable.GetEnumerator() => this._tags.GetEnumerator();
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => this.tags.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => this.tags.GetEnumerator();
     }
 }
