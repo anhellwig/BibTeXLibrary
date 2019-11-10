@@ -145,7 +145,7 @@ namespace BibTeXLibrary
                         break;
 
                     case BibBuilderState.Build:
-                        if (tagName != string.Empty)
+                        if (!string.IsNullOrEmpty(tagName))
                         {
                             Debug.Assert(bib != null, "bib != null");
                             bib[tagName] = tagValueBuilder.ToString();
