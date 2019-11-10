@@ -1,56 +1,71 @@
 # BibTeXLibrary
 
-[![Build Status](https://dev.azure.com/blueveyoud/BibTeXLibrary/_apis/build/status/BERef.BibTeXLibrary?branchName=master)](https://dev.azure.com/blueveyoud/BibTeXLibrary/_build/latest?definitionId=2&branchName=master)
-![Nuget](https://img.shields.io/nuget/v/BERef.BibTeXTools.svg)
+A utility library for BibTeX written in C#, adapted from [BERef/BibTeXLibrary](https://github.com/BERef/BibTeXLibrary). 
 
-A utility library for BibTeX written in C#.
+It contains changes from [AizazZaidee/BibTeXLibrary](https://github.com/AizazZaidee/BibTeXLibrary) which allow the parser to handle (read: ignore) comments.
 
-## Installation
-We recommand install this package via NuGet.
-```
-Install-Package BERef.BibTeXTools
-```
-For more information, please ref to [NuGet Gallery | BERef.BibTeXTools](https://www.nuget.org/packages/BERef.BibTeXTools/)
+The reader will sometimes choke on special characters, most notably in entry keys. It is neither fast nor memory efficient, but it works and it does not require any external libraries.
 
-## Usage at a glance
+## Usage
 
-- string -> BibEntry
+### Parsing
+The [`BibParser`](BibTeXLibrary/BibParser.cs) takes a `TextReader` and optionally a [`BibParserConfig`](BibTeXLibrary/BibParserConfig.cs).
+
 ```csharp
-var parser = new BibParser(
-                new StringReader(
-                  "@article{keyword, title = {\"0\"{123}456{789}}, year = 2012, address=\"PingLeYuan\"}"));
-var entry = parser.GetAllResult()[0];
+TextReader reader = ....; 
+var parser = new BibParser(reader);
+foreach (var item in parser.Parse()) {
+  // Process
+}
 ```
 
-- BibEntry
+To read a `string`:
 ```csharp
-// Get Property
-entry.Type;       // string: Article
-entry.Title;      // string: 0{123}456{789}
-entry["Title"];   // string: 0{123}456{789}
+var reader = new StringReader(...input...);
 ```
 
-- BibEntry -> string
+To read a file:
 ```csharp
-entry.ToString();
-// @Article{keyword,
-//   title = {0{123}456{789}},
-//   year = {2012},
-//   address = {PingLeYuan},
-// }
+var reader = new StreamReader(...filename...);
 ```
 
-- Local File -> BibEntries
-```csharp
-var parser = new BibParser(new StreamReader("text.bib", Encoding.Default));
-var entries = parser.GetAllResult();
+### Entries
+The parser returns a collection of [`BibEntry`](BibTeXLibrary/BibEntry.cs). Entries have a `Key` (their unique index), and a  `Type` (e.g. "article", "book", etc). All other properties are available as `KeyValuePair<string, string>` through the indexer. Keys are converted to lower case.
 
-foreach(var entry in entries) { ... }
+```csharp
+var item = new BibEntry();
+item.Type = "article";
+item.Key = "key";
+item["title"] = "Example article";
+item["author"] = "Doe, John";
+```
+
+### Writing
+Entries can be written using the [`BibWriter`](BibTeXLibrary/BibWriter.cs). The writer takes a `TextWriter` as output, and optionally a [`BibWriterConfig`](BibTeXLibrary/BibWriterConfig.cs). item properties with `null` or empty value are not written to the output.
+
+```csharp
+IEnumerable<BibEntry> items = ...;
+TextWriter writer = ....; 
+var bibWriter = new BibWriter(writer);
+bibWriter.Write(items);
+```
+
+To write to `string`:
+```csharp
+var builder = new StringBuilder();
+var writer = new StringWriter(builder);
+// ... Write to writer ...
+var result = builder.ToString();
+```
+
+To write to file:
+```csharp
+var writer = new StreamWriter(file);
 ```
 
 ## License
 
-The MIT License (MIT)
+The MIT License (MIT)  
 Copyright (c) 2016 BERef
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
