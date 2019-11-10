@@ -7,8 +7,8 @@ using System.Text;
 
 namespace BibTeXLibrary
 {
-    using Next = Tuple<ParserState, BibBuilderState>;
     using Action = Dictionary<TokenType, Tuple<ParserState, BibBuilderState>>;
+    using Next = Tuple<ParserState, BibBuilderState>;
     using StateMap = Dictionary<ParserState, Dictionary<TokenType, Tuple<ParserState, BibBuilderState>>>;
 
     public sealed class BibParser
@@ -57,7 +57,6 @@ namespace BibTeXLibrary
                 { TokenType.Start,         new Next(ParserState.InStart,     BibBuilderState.Create) } } },
         };
 
-
         private static char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
         private readonly TextReader _inputText;
         private readonly BibParserConfig _config;
@@ -82,8 +81,6 @@ namespace BibTeXLibrary
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
-
-
         public IEnumerable<BibEntry> Parse()
         {
             var curState = ParserState.Begin;
@@ -104,9 +101,10 @@ namespace BibTeXLibrary
                 else
                 {
                     var expected = from pair in StateMap[curState]
-                        select pair.Key;
+                                   select pair.Key;
                     throw new UnexpectedTokenException(_lineCount, _colCount, token.Type, expected.ToArray());
                 }
+
                 // Build BibEntry
                 switch (StateMap[curState][token.Type].Item2)
                 {
@@ -155,10 +153,11 @@ namespace BibTeXLibrary
             if (curState != ParserState.OutEntry && curState != ParserState.Begin)
             {
                 var expected = from pair in StateMap[curState]
-                    select pair.Key;
+                               select pair.Key;
                 throw new UnexpectedTokenException(_lineCount, _colCount, TokenType.EOF, expected.ToArray());
             }
         }
+
         /// <summary>
         /// Tokenizer for BibTeX entry.
         /// </summary>
@@ -175,7 +174,7 @@ namespace BibTeXLibrary
                 c = (char)code;
 
                 if (c == '@')
-                {                    
+                {
                     yield return new Token(TokenType.Start);
                 }
                 else if (char.IsLetter(c))
@@ -194,7 +193,7 @@ namespace BibTeXLibrary
                             break;
                     }
                     yield return new Token(TokenType.Name, value.ToString());
-                    goto ContinueExcute;
+                    continue;
                 }
                 else if (char.IsDigit(c))
                 {
@@ -211,7 +210,7 @@ namespace BibTeXLibrary
                         if (!char.IsDigit(c)) break;
                     }
                     yield return new Token(TokenType.String, value.ToString());
-                    goto ContinueExcute;
+                    continue;
                 }
                 else if (c == '"')
                 {
@@ -224,7 +223,6 @@ namespace BibTeXLibrary
 
                         c = (char)Read();
                         value.Append(c);
-
                     }
                     yield return new Token(TokenType.String, value.ToString());
                 }
@@ -246,7 +244,7 @@ namespace BibTeXLibrary
                             if (braceCount > 1) value.Append(c);
                         }
                         yield return new Token(TokenType.String, value.ToString());
-                        goto ContinueExcute;
+                        continue;
                     }
                 }
                 else if (c == '}')
@@ -288,9 +286,6 @@ namespace BibTeXLibrary
                     _inputText.Read();
 
                 skipRead = false;
-                // Don't move
-                ContinueExcute:
-                ;
             }
         }
 
@@ -314,7 +309,7 @@ namespace BibTeXLibrary
         }
     }
 
-    enum ParserState
+    internal enum ParserState
     {
         Begin,
         InStart,
@@ -328,7 +323,7 @@ namespace BibTeXLibrary
         OutEntry
     }
 
-    enum BibBuilderState
+    internal enum BibBuilderState
     {
         Create,
         SetType,
