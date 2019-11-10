@@ -29,7 +29,7 @@ namespace BibTeXLibrary
         {
             get
             {
-                return _tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : string.Empty;
+                return _tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : null;
             }
             set
             {
