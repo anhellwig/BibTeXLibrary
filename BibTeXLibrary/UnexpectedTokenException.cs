@@ -8,14 +8,11 @@ namespace BibTeXLibrary
     [Serializable]
     public sealed class UnexpectedTokenException : ParseErrorException
     {
-        #region Public Property
         /// <summary>
         /// The error message.
         /// </summary>
         public override string Message { get; }
-        #endregion
 
-        #region Constructor
         /// <summary>Initializes a new instance of the <see cref="UnexpectedTokenException"/> class.</summary>
         /// <param name="lineNo">The line number.</param>
         /// <param name="colNo">The column number.</param>
@@ -34,6 +31,5 @@ namespace BibTeXLibrary
             errorMsg.Remove(errorMsg.Length - 2, 2);
             Message = errorMsg.ToString();
         }
-        #endregion
     }
 }

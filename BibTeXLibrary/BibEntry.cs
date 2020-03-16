@@ -39,20 +39,20 @@ namespace BibTeXLibrary
         {
             get
             {
-                return this.tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : null;
+                return tags.TryGetValue(index.ToLowerInvariant(), out var value) ? value : null;
             }
             set
             {
                 if (value == null)
                 {
-                    if (this.ContainsKey(index))
+                    if (ContainsKey(index))
                     {
-                        this.tags.Remove(index);
+                        tags.Remove(index);
                     }
                 }
                 else
                 {
-                    this.tags[index.ToLowerInvariant()] = value;
+                    tags[index.ToLowerInvariant()] = value;
                 }
             }
         }

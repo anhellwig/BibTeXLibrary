@@ -36,14 +36,14 @@ namespace BibTeXLibrary
         {
             foreach (var item in items)
             {
-                if (!this.isFirstItem && this.config.NewLineBetweenItems)
+                if (!isFirstItem && config.NewLineBetweenItems)
                 {
-                    this.stream.Write(this.config.NewLine);
+                    stream.Write(config.NewLine);
                 }
 
-                this.WriteEntryToStream(item, this.stream);
-                this.stream.Write(this.config.NewLine);
-                this.isFirstItem = false;
+                WriteEntryToStream(item, stream);
+                stream.Write(config.NewLine);
+                isFirstItem = false;
             }
         }
 
@@ -51,7 +51,7 @@ namespace BibTeXLibrary
         /// <param name="items">The items.</param>
         public void Write(params BibEntry[] items)
         {
-            this.Write((IEnumerable<BibEntry>)items);
+            Write((IEnumerable<BibEntry>)items);
         }
 
         private void WriteEntryToStream(BibEntry value, TextWriter stream)
@@ -65,10 +65,10 @@ namespace BibTeXLibrary
             if (count > 0)
             {
                 stream.Write(",");
-                stream.Write(this.config.NewLine);
+                stream.Write(config.NewLine);
 
                 var pad = 0;
-                if (this.config.Align)
+                if (config.Align)
                 {
                     pad = value.Max(v => v.Key.Length);
                 }
@@ -79,13 +79,13 @@ namespace BibTeXLibrary
                     i++;
                     if (!string.IsNullOrWhiteSpace(tag.Key) && !string.IsNullOrWhiteSpace(tag.Value))
                     {
-                        stream.Write(this.config.Indent);
+                        stream.Write(config.Indent);
                         stream.Write(tag.Key.PadRight(pad));
                         stream.Write(" = {");
                         stream.Write(tag.Value);
                         stream.Write("}");
                         if (i < count) stream.Write(",");
-                        stream.Write(this.config.NewLine);
+                        stream.Write(config.NewLine);
                     }
                 }
             }

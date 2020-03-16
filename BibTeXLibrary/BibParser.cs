@@ -59,18 +59,18 @@ namespace BibTeXLibrary
         };
 
         private static char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
-        private readonly TextReader _inputText;
-        private readonly BibParserConfig _config;
+        private readonly TextReader inputText;
+        private readonly BibParserConfig config;
 
         /// <summary>
         /// Line No. counter.
         /// </summary>
-        private int _lineCount = 1;
+        private int lineCount = 1;
 
         /// <summary>
         /// Column counter.
         /// </summary>
-        private int _colCount;
+        private int colCount;
 
         /// <summary>Initializes a new instance of the <see cref="BibParser"/> class.</summary>
         /// <param name="inputText">The input text.</param>
@@ -84,8 +84,8 @@ namespace BibTeXLibrary
         /// <exception cref="System.ArgumentNullException">Thrown when the inputText or config argument is null.</exception>
         public BibParser(TextReader inputText, BibParserConfig config)
         {
-            _inputText = inputText ?? throw new ArgumentNullException(nameof(inputText));
-            _config = config ?? throw new ArgumentNullException(nameof(config));
+            this.inputText = inputText ?? throw new ArgumentNullException(nameof(inputText));
+            this.config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
         /// <summary>Parses the specified input text.</summary>
@@ -112,7 +112,7 @@ namespace BibTeXLibrary
                 {
                     var expected = from pair in StateMap[curState]
                                    select pair.Key;
-                    throw new UnexpectedTokenException(_lineCount, _colCount, token.Type, expected.ToArray());
+                    throw new UnexpectedTokenException(lineCount, colCount, token.Type, expected.ToArray());
                 }
 
                 // Build BibEntry
@@ -164,7 +164,7 @@ namespace BibTeXLibrary
             {
                 var expected = from pair in StateMap[curState]
                                select pair.Key;
-                throw new UnexpectedTokenException(_lineCount, _colCount, TokenType.EOF, expected.ToArray());
+                throw new UnexpectedTokenException(lineCount, colCount, TokenType.EOF, expected.ToArray());
             }
         }
 
@@ -226,7 +226,7 @@ namespace BibTeXLibrary
                 {
                     var value = new StringBuilder();
 
-                    _inputText.Read();
+                    inputText.Read();
                     while ((code = Peek()) != -1)
                     {
                         if (c != '\\' && code == '"') break;
@@ -276,24 +276,24 @@ namespace BibTeXLibrary
                 }
                 else if (c == '\n')
                 {
-                    _colCount = 0;
-                    _lineCount++;
+                    colCount = 0;
+                    lineCount++;
                 }
-                else if (_config.BeginCommentCharacters.Any(item => item == c))
+                else if (config.BeginCommentCharacters.Any(item => item == c))
                 {
-                    _colCount = 0;
-                    _lineCount++;
-                    _inputText.ReadLine();
+                    colCount = 0;
+                    lineCount++;
+                    inputText.ReadLine();
                     skipRead = true;
                 }
                 else if (!char.IsWhiteSpace(c))
                 {
-                    throw new UnrecognizableCharacterException(_lineCount, _colCount, c);
+                    throw new UnrecognizableCharacterException(lineCount, colCount, c);
                 }
 
                 // Move to next char if possible
-                if (_inputText.Peek() != -1 && !skipRead)
-                    _inputText.Read();
+                if (inputText.Peek() != -1 && !skipRead)
+                    inputText.Read();
 
                 skipRead = false;
             }
@@ -305,7 +305,7 @@ namespace BibTeXLibrary
         /// <returns></returns>
         private int Peek()
         {
-            return _inputText.Peek();
+            return inputText.Peek();
         }
 
         /// <summary>
@@ -314,8 +314,8 @@ namespace BibTeXLibrary
         /// <returns></returns>
         private int Read()
         {
-            _colCount++;
-            return _inputText.Read();
+            colCount++;
+            return inputText.Read();
         }
     }
 

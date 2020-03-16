@@ -4,14 +4,11 @@
     /// <seealso cref="BibTeXLibrary.ParseErrorException" />
     public class UnrecognizableCharacterException : ParseErrorException
     {
-        #region Public Property
         /// <summary>
         /// The error message.
         /// </summary>
         public override string Message { get; }
-        #endregion
 
-        #region Constructor
         /// <summary>Initializes a new instance of the <see cref="UnrecognizableCharacterException"/> class.</summary>
         /// <param name="lineNo">The line number.</param>
         /// <param name="colNo">The column number.</param>
@@ -21,6 +18,5 @@
         {
             Message = $"Line {lineNo}, Col {colNo}. Unrecognizable character: '{unexpected}'.";
         }
-        #endregion
     }
 }
