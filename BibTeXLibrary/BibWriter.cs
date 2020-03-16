@@ -91,7 +91,6 @@ namespace BibTeXLibrary
             }
 
             stream.Write("}");
-            stream.Flush();
         }
     }
 }
