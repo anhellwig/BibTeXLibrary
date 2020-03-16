@@ -4,13 +4,15 @@ using System.Collections.Generic;
 
 namespace BibTeXLibrary
 {
-    public class BibEntry : IEnumerable<KeyValuePair<string, string>>
+    public class BibEntry : IReadOnlyCollection<KeyValuePair<string, string>>
     {
         private readonly Dictionary<string, string> tags = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
 
         public string Key { get; set; }
 
         public string Type { get; set; }
+
+        public int Count => tags.Count;
 
         /// <summary>
         /// Get value by given tagname(index) or create new tag by index and value.

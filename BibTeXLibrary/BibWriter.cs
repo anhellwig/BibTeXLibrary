@@ -47,25 +47,33 @@ namespace BibTeXLibrary
             stream.Write(value.Type);
             stream.Write('{');
             stream.Write(value.Key);
-            stream.Write(",");
-            stream.Write(this.config.NewLine);
 
-            var pad = 0;
-            if (this.config.Align)
+            int count = value.Count;
+            if (count > 0)
             {
-                pad = value.Max(v => v.Key.Length);
-            }
+                stream.Write(",");
+                stream.Write(this.config.NewLine);
 
-            foreach (var tag in value)
-            {
-                if (!string.IsNullOrWhiteSpace(tag.Key) && !string.IsNullOrWhiteSpace(tag.Value))
+                var pad = 0;
+                if (this.config.Align)
                 {
-                    stream.Write(this.config.Indent);
-                    stream.Write(tag.Key.PadRight(pad));
-                    stream.Write(" = {");
-                    stream.Write(tag.Value);
-                    stream.Write("},");
-                    stream.Write(this.config.NewLine);
+                    pad = value.Max(v => v.Key.Length);
+                }
+
+                int i = 0;
+                foreach (var tag in value)
+                {
+                    i++;
+                    if (!string.IsNullOrWhiteSpace(tag.Key) && !string.IsNullOrWhiteSpace(tag.Value))
+                    {
+                        stream.Write(this.config.Indent);
+                        stream.Write(tag.Key.PadRight(pad));
+                        stream.Write(" = {");
+                        stream.Write(tag.Value);
+                        stream.Write("}");
+                        if (i < count) stream.Write(",");
+                        stream.Write(this.config.NewLine);
+                    }
                 }
             }
 
