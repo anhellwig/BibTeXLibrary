@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BibTeXLibrary", "BibTeXLibrary\BibTeXLibrary.csproj", "{E453FF0B-97B0-4575-9A2E-B15DCBF7C47F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BibTeXLibrary", "BibTeXLibrary\BibTeXLibrary.csproj", "{E453FF0B-97B0-4575-9A2E-B15DCBF7C47F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "UnitTest\UnitTest.csproj", "{53115C09-7A3C-48CD-98AF-06668FC3E6EC}"
 EndProject
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B6B8EEDE-26F8-43F2-A9C6-8EF788A462D5}
 	EndGlobalSection
 EndGlobal
