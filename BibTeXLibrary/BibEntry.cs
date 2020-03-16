@@ -25,7 +25,7 @@ namespace BibTeXLibrary
             }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (value == null)
                 {
                     if (this.ContainsKey(index))
                     {
