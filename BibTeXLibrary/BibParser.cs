@@ -58,7 +58,7 @@ namespace BibTeXLibrary
                 { TokenType.Start,         new Next(ParserState.InStart,     BibBuilderState.Create) } } },
         };
 
-        private static char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
+        private static readonly char[] allowedSpecialChars = new[] { '-', '.', '_', ':', '/' };
         private readonly TextReader inputText;
         private readonly BibParserConfig config;
 
@@ -191,17 +191,15 @@ namespace BibTeXLibrary
                 {
                     var value = new StringBuilder();
 
-                    while (true)
+                    do
                     {
                         c = (char)Read();
                         value.Append(c);
 
                         if ((code = Peek()) == -1) break;
                         c = (char)code;
-
-                        if (!char.IsLetterOrDigit(c) && !allowedSpecialChars.Contains(c))
-                            break;
                     }
+                    while (char.IsLetterOrDigit(c) || allowedSpecialChars.Contains(c));
                     yield return new Token(TokenType.Name, value.ToString());
                     continue;
                 }
@@ -209,16 +207,15 @@ namespace BibTeXLibrary
                 {
                     var value = new StringBuilder();
 
-                    while (true)
+                    do
                     {
                         c = (char)Read();
                         value.Append(c);
 
                         if ((code = Peek()) == -1) break;
                         c = (char)code;
-
-                        if (!char.IsDigit(c)) break;
                     }
+                    while (char.IsDigit(c));
                     yield return new Token(TokenType.String, value.ToString());
                     continue;
                 }
@@ -249,8 +246,10 @@ namespace BibTeXLibrary
                         while (braceCount > 1 && Peek() != -1)
                         {
                             c = (char)Read();
-                            if (c == '{') braceCount++;
-                            else if (c == '}') braceCount--;
+                            if (c == '{')
+                                braceCount++;
+                            else if (c == '}') 
+                                braceCount--;
                             if (braceCount > 1) value.Append(c);
                         }
                         yield return new Token(TokenType.String, value.ToString());
