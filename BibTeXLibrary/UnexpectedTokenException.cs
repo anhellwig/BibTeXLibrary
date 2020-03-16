@@ -3,18 +3,24 @@ using System.Text;
 
 namespace BibTeXLibrary
 {
+    /// <summary>The exception that is thrown when an unexpected token is encountered.</summary>
+    /// <seealso cref="BibTeXLibrary.ParseErrorException" />
     [Serializable]
     public sealed class UnexpectedTokenException : ParseErrorException
     {
         #region Public Property
         /// <summary>
-        /// Error message.
+        /// The error message.
         /// </summary>
         public override string Message { get; }
-
         #endregion
 
         #region Constructor
+        /// <summary>Initializes a new instance of the <see cref="UnexpectedTokenException"/> class.</summary>
+        /// <param name="lineNo">The line number.</param>
+        /// <param name="colNo">The column number.</param>
+        /// <param name="unexpected">The unexpected token type.</param>
+        /// <param name="expected">The expected token type.</param>
         public UnexpectedTokenException(int lineNo, int colNo, TokenType unexpected, params TokenType[] expected)
             : base(lineNo, colNo)
         {

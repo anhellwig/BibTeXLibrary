@@ -11,6 +11,7 @@ namespace BibTeXLibrary
     using Next = Tuple<ParserState, BibBuilderState>;
     using StateMap = Dictionary<ParserState, Dictionary<TokenType, Tuple<ParserState, BibBuilderState>>>;
 
+    /// <summary>Parses a bib file.</summary>
     public sealed class BibParser
     {
         /// <summary>
@@ -71,16 +72,25 @@ namespace BibTeXLibrary
         /// </summary>
         private int _colCount;
 
+        /// <summary>Initializes a new instance of the <see cref="BibParser"/> class.</summary>
+        /// <param name="inputText">The input text.</param>
         public BibParser(TextReader inputText) : this(inputText, new BibParserConfig())
         {
         }
 
+        /// <summary>Initializes a new instance of the <see cref="BibParser"/> class.</summary>
+        /// <param name="inputText">The input text.</param>
+        /// <param name="config">The configuration.</param>
+        /// <exception cref="System.ArgumentNullException">Thrown when the inputText or config argument is null.</exception>
         public BibParser(TextReader inputText, BibParserConfig config)
         {
             _inputText = inputText ?? throw new ArgumentNullException(nameof(inputText));
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
 
+        /// <summary>Parses the specified input text.</summary>
+        /// <returns>The bib entries.</returns>
+        /// <exception cref="UnexpectedTokenException">Thrown when an unexpected token is encountered.</exception>
         public IEnumerable<BibEntry> Parse()
         {
             var curState = ParserState.Begin;
